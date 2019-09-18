@@ -2,17 +2,18 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 
+#input starting path
+start_path = ''
 #load in congressional resuts from 1976-2018
-raw_elec = gpd.read_file('/Users/hwheelen/Documents/GitHub/MEDSL/1976-2016-president.csv')
+raw_elec = gpd.read_file(start_path + 'GitHub/MEDSL/1976-2016-president.csv')
 #load in congressional district county csv
-dist_count = pd.read_csv('/Users/hwheelen/Documents/GitHub/projects/DHondt/State_Congressional_District_Counts.csv')
+dist_count = pd.read_csv(start_path + 'GitHub/dhondt-gerrymander/State_Congressional_District_Counts.csv')
 
 #filter out years we don't care about
 years = ['2012', '2016']
 raw_elec = raw_elec[raw_elec['year'].isin(years)]
 
 #for one state, aggregate votes for each major party
-
 for year in years:
     elec = raw_elec.loc[raw_elec['year'] == year]
     party_dict = {}
@@ -37,57 +38,5 @@ for year in years:
                 party_dict[name] = (st_party_df.loc[st_party_df.Party == party]['Party Votes'][0])/i
                 
         party_df = pd.DataFrame.from_dict(data = party_dict, orient = 'index')
-        party_df.to_csv('/Users/hwheelen/Documents/GitHub/projects/DHondt/President/National_Party_Bids_Pres' + year +'.csv')
-
-
-state_party_dict = {
-        'Alabama':['republican','democrat'],
-        'Alaska':['republican','democrat'], 
-        'Arizona':['republican','democrat'], 
-        'Arkansas':['republican','democrat'], 
-        'California':['republican','democrat'],
-        'Colorado':['republican','democrat'],
-        'Connecticut':['republican','democrat'], 
-        'Delaware':['republican','democrat'], 
-        'Florida':['republican','democrat'], 
-        'Georgia':['republican','democrat'],
-        'Hawaii':['republican','democrat'], 
-        'Idaho':['republican','democrat'], 
-        'Illinois':['republican','democrat'], 
-        'Indiana':['republican','democrat'], 
-        'Iowa':['republican','democrat'], 
-        'Kansas':['republican','democrat'],
-        'Kentucky':['republican','democrat'],
-        'Louisiana':['republican','democrat'], 
-        'Maine':['republican','democrat'],
-        'Maryland':['republican','democrat'],
-        'Massachusetts':['republican','democrat'],
-        'Michigan':['republican','democrat'],
-        'Minnesota':['republican','democrat'],
-        'Mississippi':['republican','democrat'], 
-        'Missouri':['republican','democrat'], 
-        'Montana':['republican','democrat'],
-        'Nebraska':['republican','democrat'], 
-        'Nevada':['republican','democrat'], 
-        'New Hampshire':['republican','democrat'], 
-        'New Jersey':['republican','democrat'],
-        'New Mexico':['republican','democrat'],
-        'New York':['republican','democrat'],
-        'North Carolina':['republican','democrat'], 
-        'North Dakota':['republican','democrat'],
-        'Ohio':['republican','democrat'],
-        'Oklahoma':['republican','democrat'],
-        'Oregon':['republican','democrat'], 
-        'Pennsylvania':['republican','democrat'], 
-        'Rhode Island':['republican','democrat'],
-        'South Carolina':['republican','democrat'],
-        'South Dakota':['republican','democrat'],
-        'Tennessee':['republican','democrat'], 
-        'Texas':['republican','democrat'],
-        'Utah':['republican','democrat'], 
-        'Vermont':['republican','democrat'],
-        'Virginia':['republican','democrat'], 
-        'Washington':['republican','democrat'], 
-        'West Virginia':['republican','democrat'], 
-        'Wisconsin':['republican','democrat'], 
-        'Wyoming':['republican','democrat']}
+        #save csv
+        party_df.to_csv(start_path + 'GitHub/dhondt-gerrymander/President/National_Party_Bids_Pres' + year +'.csv')
