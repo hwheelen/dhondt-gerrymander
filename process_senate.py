@@ -2,12 +2,10 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 
-#input starting path
-start_path = ''
 #load in congressional resuts from 1976-2018
-raw_elec = gpd.read_file(start_path + 'GitHub/MEDSL/1976-2018-house.csv')
+raw_elec = gpd.read_file('/Users/hwheelen/Documents/GitHub/MEDSL/1976-2018-house.csv')
 #load in congressional district county csv
-dist_count = pd.read_csv(start_path + 'GitHub/dhondt-gerrymander/State_Congressional_District_Counts.csv')
+dist_count = pd.read_csv('/Users/hwheelen/Documents/GitHub/projects/DHondt/State_Congressional_District_Counts.csv')
 
 #filter out years we don't care about
 years = ['2010','2012', '2014', '2016', '2018']
@@ -24,6 +22,7 @@ states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
        'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
        'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
        'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+states = ['Alabama']
 for year in years:
     elec = raw_elec.loc[raw_elec['year'] == year]
     party_dict = {}
@@ -45,7 +44,13 @@ for year in years:
                 for i in range(1,num10+1):
                     name = st + ' ' + year + ' ' + party + ', ' + 'bid ' + str(i)
                     party_dict[name] = (st_party_df.loc[st_party_df.Party == party]['Party Votes'][0])/i
-                
+                    
+            winning_df = pd.DataFrame.from_dict(data= party_dict, orient = 'index')
+            winning_df = winning_df.sort_values(by = [0], ascending = False)
+            winning_df = winning_df.head(num10)
+            for bid, votes in winning_df.iterrows():
+                print(bid, votes)
+                party_dict[bid] = votes
                 
         
         else:
@@ -53,6 +58,11 @@ for year in years:
                 for i in range(1,num12+1):
                     name = st + ' ' + year + ' ' + party + ', ' + 'bid ' + str(i)
                     party_dict[name] = (st_party_df.loc[st_party_df.Party == party]['Party Votes'][0])/i
-                
+            winning_df = pd.DataFrame.from_dict(data= party_dict, orient = 'index')
+            winning_df = winning_df.sort_values(by = [0], ascending = False)
+            winning_df = winning_df.head(num12)
+            for bid, votes in winning_df.iterrows():
+                print(bid, votes)
+                party_dict[bid] = votes
         party_df = pd.DataFrame.from_dict(data = party_dict, orient = 'index')
-        party_df.to_csv(start_path + 'GitHub/dhondt-gerrymander/Congress/years/National_Party_Bids_' + year +'.csv')
+        party_df.to_csv('/Users/hwheelen/Documents/GitHub/projects/DHondt/Congress/Winners/Winning_Party_Bids_' + year +'.csv')
